@@ -1,6 +1,6 @@
 -- =======================================================
 -- M A L A I K A T  H U B
--- C L E A N  S C R I P T  L O A D E R
+-- C L E A N  &  A N I M A T E D  L O A D E R
 -- =======================================================
 
 local CoreGui = game:GetService("CoreGui")
@@ -79,6 +79,15 @@ local UICorner = Instance.new("UICorner")
 UICorner.CornerRadius = Theme.CornerRadius
 UICorner.Parent = MainFrame
 
+-- Layer Khusus Animasi Meteor (Di belakang teks)
+local MeteorContainer = Instance.new("Frame")
+MeteorContainer.Name = "MeteorContainer"
+MeteorContainer.Size = UDim2.new(1, 0, 1, 0)
+MeteorContainer.BackgroundTransparency = 1
+MeteorContainer.ClipsDescendants = true
+MeteorContainer.ZIndex = 1
+MeteorContainer.Parent = MainFrame
+
 -- Premium Glowing Border
 local UIStroke = Instance.new("UIStroke")
 UIStroke.Color = Theme.Accent
@@ -96,7 +105,7 @@ UIGradient.Color = ColorSequence.new({
 UIGradient.Rotation = 45
 UIGradient.Parent = UIStroke
 
--- Header Area (Hanya Logo & Nama Hub)
+-- Header Area (Tanpa tulisan Universal)
 local Logo = Instance.new("TextLabel")
 Logo.Size = UDim2.new(0, 30, 0, 30)
 Logo.Position = UDim2.new(0, 15, 0, 15)
@@ -105,6 +114,7 @@ Logo.Text = "M"
 Logo.TextColor3 = Theme.Accent
 Logo.TextSize = 22
 Logo.Font = Theme.FontBold
+Logo.ZIndex = 3
 Logo.Parent = MainFrame
 
 local TitleLabel = Instance.new("TextLabel")
@@ -116,6 +126,7 @@ TitleLabel.TextColor3 = Theme.TextMain
 TitleLabel.TextSize = 15
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 TitleLabel.Font = Theme.FontBold
+TitleLabel.ZIndex = 3
 TitleLabel.Parent = MainFrame
 
 -- Status & Progress Area
@@ -124,6 +135,7 @@ StatusContainer.Name = "StatusContainer"
 StatusContainer.Size = UDim2.new(1, -30, 0, 45)
 StatusContainer.Position = UDim2.new(0, 15, 0, 55)
 StatusContainer.BackgroundTransparency = 1
+StatusContainer.ZIndex = 3
 StatusContainer.Parent = MainFrame
 
 local StatusLabel = Instance.new("TextLabel")
@@ -135,6 +147,7 @@ StatusLabel.TextSize = 13
 StatusLabel.Font = Theme.FontMain
 StatusLabel.TextXAlignment = Enum.TextXAlignment.Center
 StatusLabel.TextTransparency = 1
+StatusLabel.ZIndex = 3
 StatusLabel.Parent = StatusContainer
 
 local BarOutline = Instance.new("Frame")
@@ -143,12 +156,14 @@ BarOutline.Position = UDim2.new(0.5, -60, 0, 28)
 BarOutline.BackgroundColor3 = Theme.Accent
 BarOutline.BackgroundTransparency = 0.8
 BarOutline.BorderSizePixel = 0
+BarOutline.ZIndex = 3
 BarOutline.Parent = StatusContainer
 
 local BarFill = Instance.new("Frame")
 BarFill.Size = UDim2.new(0, 0, 1, 0)
 BarFill.BackgroundColor3 = Theme.Accent
 BarFill.BorderSizePixel = 0
+BarFill.ZIndex = 3
 BarFill.Parent = BarOutline
 
 -- Action Area (Tombol Execute + Subtext Footer)
@@ -158,9 +173,10 @@ ActionContainer.Size = UDim2.new(1, -30, 0, 80)
 ActionContainer.Position = UDim2.new(0, 15, 0, 100)
 ActionContainer.BackgroundTransparency = 1
 ActionContainer.Visible = false
+ActionContainer.ZIndex = 3
 ActionContainer.Parent = MainFrame
 
--- Tombol Execute (Interactive Hover)
+-- Tombol Execute
 local ExecuteBtn = Instance.new("TextButton")
 ExecuteBtn.Name = "ExecuteButton"
 ExecuteBtn.Size = UDim2.new(1, 0, 0, 32)
@@ -171,13 +187,14 @@ ExecuteBtn.TextColor3 = Color3.fromRGB(10, 10, 15)
 ExecuteBtn.TextSize = 13
 ExecuteBtn.Font = Theme.FontBold
 ExecuteBtn.AutoButtonColor = false
+ExecuteBtn.ZIndex = 4
 ExecuteBtn.Parent = ActionContainer
 
 local BtnCorner = Instance.new("UICorner")
 BtnCorner.CornerRadius = UDim.new(0, 6)
 BtnCorner.Parent = ExecuteBtn
 
--- Tulisan Kecil & Pudar di bawah Tombol Execute
+-- Subtext Footer
 local Subtext1 = Instance.new("TextLabel")
 Subtext1.Size = UDim2.new(1, 0, 0, 12)
 Subtext1.Position = UDim2.new(0, 0, 0, 38)
@@ -187,6 +204,7 @@ Subtext1.TextColor3 = Theme.TextSub
 Subtext1.TextTransparency = 0.55
 Subtext1.TextSize = 9
 Subtext1.Font = Theme.FontMain
+Subtext1.ZIndex = 4
 Subtext1.Parent = ActionContainer
 
 local Subtext2 = Instance.new("TextLabel")
@@ -198,16 +216,72 @@ Subtext2.TextColor3 = Theme.TextSub
 Subtext2.TextTransparency = 0.55
 Subtext2.TextSize = 9
 Subtext2.Font = Theme.FontMain
+Subtext2.ZIndex = 4
 Subtext2.Parent = ActionContainer
 
 -- =======================================================
--- EFEK ANIMASI TRANSISI & HOVER
+-- ANIMASI METEOR SMOOTH & INTERAKSI
 -- =======================================================
 
 local TInfo_Quick = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
 local TInfo_Smooth = TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out)
 
--- Border Gradient Rotation (Dinamis)
+-- Fungsi Membuat Meteor Jatuh di Dalam Card Frame
+local function SpawnMeteor()
+    if not ScreenGui.Parent or not MainFrame.Parent then return end
+
+    local Meteor = Instance.new("Frame")
+    Meteor.Name = "Meteor"
+    Meteor.Size = UDim2.new(0, math.random(50, 85), 0, 1.5)
+    Meteor.Rotation = -35
+    Meteor.BackgroundColor3 = Theme.Accent
+    Meteor.BorderSizePixel = 0
+    Meteor.ZIndex = 2
+    Meteor.Parent = MeteorContainer
+
+    -- Posisi Awal (Mulai dari Atas/Kanan Card)
+    local startX = math.random(20, 120) / 100
+    Meteor.Position = UDim2.new(startX, 0, -0.2, 0)
+
+    -- Trail Ekor Meteor (Fade Out Gradient)
+    local Gradient = Instance.new("UIGradient")
+    Gradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 0)),
+        ColorSequenceKeypoint.new(0.4, Theme.Accent),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
+    })
+    Gradient.Transparency = NumberSequence.new({
+        NumberSequenceKeypoint.new(0, 1),
+        NumberSequenceKeypoint.new(0.5, 0.2),
+        NumberSequenceKeypoint.new(1, 0)
+    })
+    Gradient.Parent = Meteor
+
+    -- Gerakan Luncuran Meteor
+    local targetX = Meteor.Position.X.Scale - 0.75
+    local targetY = 1.3
+    local duration = math.random(12, 22) / 10
+
+    local tween = TweenService:Create(Meteor, TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        Position = UDim2.new(targetX, 0, targetY, 0),
+        BackgroundTransparency = 0.6
+    })
+
+    tween:Play()
+    tween.Completed:Connect(function()
+        Meteor:Destroy()
+    end)
+end
+
+-- Loop Spawner Meteor (Aktif terus selama UI ada)
+task.spawn(function()
+    while ScreenGui.Parent do
+        SpawnMeteor()
+        task.wait(math.random(10, 25) / 10) -- Muncul tiap 1 - 2.5 detik
+    end
+end)
+
+-- Border Gradient Rotation
 task.spawn(function()
     while ScreenGui.Parent do
         TweenService:Create(UIGradient, TweenInfo.new(4, Enum.EasingStyle.Linear), {Rotation = UIGradient.Rotation + 360}):Play()
@@ -302,7 +376,7 @@ task.spawn(function()
     local targetScriptURL = SupportedGames[PlaceId]
 
     if targetScriptURL then
-        -- Game Didukung: Tampilkan Pesan Selesai Loading
+        -- Game Didukung
         SetStatus("LIKE MY SCRIPT IF YOU LIKE IT", Theme.Success, 1)
         task.wait(0.8)
 
