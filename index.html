@@ -1,14 +1,11 @@
 -- =======================================================
 -- M A L A I K A T  H U B
--- U L T R A - P R E M I U M  S C R I P T  L O A D E R
+-- C L E A N  S C R I P T  L O A D E R
 -- =======================================================
--- Style: Minimalist Glassmorphism & Cybernetic
--- Features: Dynamic Meteors, Hover Scale Execute Button, Faded Footers
 
 local CoreGui = game:GetService("CoreGui")
 local TweenService = game:GetService("TweenService")
 local MarketplaceService = game:GetService("MarketplaceService")
-local RunService = game:GetService("RunService")
 local PlaceId = game.PlaceId
 
 -- 1. PREVENT DOUBLE LOADING
@@ -39,11 +36,11 @@ local SupportedGames = {
 
 -- 3. THEME CONFIGURATION
 local Theme = {
-    Background    = Color3.fromRGB(15, 15, 17), -- Deep Charcoal
-    Accent        = Color3.fromRGB(0, 217, 255), -- Electric Cyan
-    AccentHover   = Color3.fromRGB(80, 235, 255),-- Brighter Hover Cyan
-    TextMain      = Color3.fromRGB(240, 240, 240), -- Off-White
-    TextSub       = Color3.fromRGB(160, 160, 165), -- Muted Gray
+    Background    = Color3.fromRGB(15, 15, 17),  -- Deep Charcoal
+    Accent        = Color3.fromRGB(0, 217, 255),  -- Electric Cyan
+    AccentHover   = Color3.fromRGB(80, 235, 255), -- Brighter Hover Cyan
+    TextMain      = Color3.fromRGB(240, 240, 240),-- Off-White
+    TextSub       = Color3.fromRGB(160, 160, 165),-- Muted Gray
     Error         = Color3.fromRGB(255, 70, 70),  -- Soft Red
     Success       = Color3.fromRGB(80, 255, 120), -- Soft Green
     FontMain      = Enum.Font.GothamMedium,
@@ -66,17 +63,10 @@ pcall(function()
 end)
 if not ScreenGui.Parent then ScreenGui.Parent = CoreGui end
 
--- Background Layer for Meteors
-local EffectsLayer = Instance.new("Frame")
-EffectsLayer.Name = "EffectsLayer"
-EffectsLayer.Size = UDim2.new(1, 0, 1, 0)
-EffectsLayer.BackgroundTransparency = 1
-EffectsLayer.Parent = ScreenGui
-
 -- Main Card Frame
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 320, 0, 125) -- Ringkas
+MainFrame.Size = UDim2.new(0, 320, 0, 115)
 MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 MainFrame.BackgroundColor3 = Theme.Background
@@ -106,7 +96,7 @@ UIGradient.Color = ColorSequence.new({
 UIGradient.Rotation = 45
 UIGradient.Parent = UIStroke
 
--- Header Area
+-- Header Area (Hanya Logo & Nama Hub)
 local Logo = Instance.new("TextLabel")
 Logo.Size = UDim2.new(0, 30, 0, 30)
 Logo.Position = UDim2.new(0, 15, 0, 15)
@@ -118,32 +108,21 @@ Logo.Font = Theme.FontBold
 Logo.Parent = MainFrame
 
 local TitleLabel = Instance.new("TextLabel")
-TitleLabel.Size = UDim2.new(1, -70, 0, 20)
-TitleLabel.Position = UDim2.new(0, 55, 0, 10)
+TitleLabel.Size = UDim2.new(1, -70, 0, 30)
+TitleLabel.Position = UDim2.new(0, 55, 0, 15)
 TitleLabel.BackgroundTransparency = 1
 TitleLabel.Text = "MALAIKAT HUB"
 TitleLabel.TextColor3 = Theme.TextMain
-TitleLabel.TextSize = 14
+TitleLabel.TextSize = 15
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
-TitleLabel.Font = Theme.FontMain
+TitleLabel.Font = Theme.FontBold
 TitleLabel.Parent = MainFrame
-
-local SubLabel = Instance.new("TextLabel")
-SubLabel.Size = UDim2.new(1, -70, 0, 15)
-SubLabel.Position = UDim2.new(0, 55, 0, 30)
-SubLabel.BackgroundTransparency = 1
-SubLabel.Text = "Universal Module Loader"
-SubLabel.TextColor3 = Theme.TextSub
-SubLabel.TextSize = 10
-SubLabel.TextXAlignment = Enum.TextXAlignment.Left
-SubLabel.Font = Theme.FontMain
-SubLabel.Parent = MainFrame
 
 -- Status & Progress Area
 local StatusContainer = Instance.new("Frame")
 StatusContainer.Name = "StatusContainer"
 StatusContainer.Size = UDim2.new(1, -30, 0, 45)
-StatusContainer.Position = UDim2.new(0, 15, 0, 60)
+StatusContainer.Position = UDim2.new(0, 15, 0, 55)
 StatusContainer.BackgroundTransparency = 1
 StatusContainer.Parent = MainFrame
 
@@ -172,13 +151,13 @@ BarFill.BackgroundColor3 = Theme.Accent
 BarFill.BorderSizePixel = 0
 BarFill.Parent = BarOutline
 
--- Action Area (Tombol Execute + Subtext)
+-- Action Area (Tombol Execute + Subtext Footer)
 local ActionContainer = Instance.new("Frame")
 ActionContainer.Name = "ActionContainer"
 ActionContainer.Size = UDim2.new(1, -30, 0, 80)
-ActionContainer.Position = UDim2.new(0, 15, 0, 105)
+ActionContainer.Position = UDim2.new(0, 15, 0, 100)
 ActionContainer.BackgroundTransparency = 1
-ActionContainer.Visible = false -- Muncul setelah loading selesai
+ActionContainer.Visible = false
 ActionContainer.Parent = MainFrame
 
 -- Tombol Execute (Interactive Hover)
@@ -186,10 +165,9 @@ local ExecuteBtn = Instance.new("TextButton")
 ExecuteBtn.Name = "ExecuteButton"
 ExecuteBtn.Size = UDim2.new(1, 0, 0, 32)
 ExecuteBtn.Position = UDim2.new(0, 0, 0, 0)
-ExecuteBtn.AnchorPoint = Vector2.new(0, 0)
 ExecuteBtn.BackgroundColor3 = Theme.Accent
 ExecuteBtn.Text = "EXECUTE"
-ExecuteBtn.TextColor3 = Color3.fromRGB(10, 10, 15) -- Warna teks gelap agar kontras
+ExecuteBtn.TextColor3 = Color3.fromRGB(10, 10, 15)
 ExecuteBtn.TextSize = 13
 ExecuteBtn.Font = Theme.FontBold
 ExecuteBtn.AutoButtonColor = false
@@ -223,59 +201,13 @@ Subtext2.Font = Theme.FontMain
 Subtext2.Parent = ActionContainer
 
 -- =======================================================
--- EFEK ANIMASI METEOR & TRANSISI
+-- EFEK ANIMASI TRANSISI & HOVER
 -- =======================================================
 
 local TInfo_Quick = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
 local TInfo_Smooth = TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out)
 
--- Efek Meteor Jatuh
-local function SpawnMeteor()
-    if not ScreenGui.Parent then return end
-    
-    local Meteor = Instance.new("Frame")
-    local spawnFromTop = math.random(1, 2) == 1
-    
-    if spawnFromTop then
-        Meteor.Position = UDim2.new(math.random(0.1, 1), 0, -0.1, 0)
-    else
-        Meteor.Position = UDim2.new(1.1, 0, math.random(0, 0.6), 0)
-    end
-    
-    Meteor.Size = UDim2.new(0, math.random(60, 110), 0, 1)
-    Meteor.Rotation = -35
-    Meteor.BackgroundColor3 = Theme.Accent
-    Meteor.BorderSizePixel = 0
-    Meteor.Parent = EffectsLayer
-    
-    local Gradient = Instance.new("UIGradient")
-    Gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.new(0,0,0)),
-        ColorSequenceKeypoint.new(0.2, Theme.Accent),
-        ColorSequenceKeypoint.new(1, Color3.new(0,0,0))
-    })
-    Gradient.Parent = Meteor
-    
-    local TravelTime = math.random(15, 25) / 10
-    local TargetPos = UDim2.new(Meteor.Position.X.Scale - 1.2, 0, Meteor.Position.Y.Scale + 0.8, 0)
-    
-    local tween = TweenService:Create(Meteor, TweenInfo.new(TravelTime, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-        Position = TargetPos,
-        BackgroundTransparency = 0.6
-    })
-    
-    tween:Play()
-    tween.Completed:Connect(function() Meteor:Destroy() end)
-end
-
-task.spawn(function()
-    while ScreenGui.Parent do
-        SpawnMeteor()
-        task.wait(math.random(15, 35) / 10)
-    end
-end)
-
--- Border Gradient Rotation
+-- Border Gradient Rotation (Dinamis)
 task.spawn(function()
     while ScreenGui.Parent do
         TweenService:Create(UIGradient, TweenInfo.new(4, Enum.EasingStyle.Linear), {Rotation = UIGradient.Rotation + 360}):Play()
@@ -324,7 +256,7 @@ local function ShowUI()
     MainFrame.BackgroundTransparency = 1
     UIStroke.Transparency = 1
     
-    TweenService:Create(MainFrame, TInfo_Smooth, {Size = UDim2.new(0, 320, 0, 125)}):Play()
+    TweenService:Create(MainFrame, TInfo_Smooth, {Size = UDim2.new(0, 320, 0, 115)}):Play()
     TweenService:Create(MainFrame, TInfo_Smooth, {BackgroundTransparency = 0.15}):Play()
     TweenService:Create(UIStroke, TInfo_Smooth, {Transparency = 0.6}):Play()
     
@@ -374,11 +306,11 @@ task.spawn(function()
         SetStatus("LIKE MY SCRIPT IF YOU LIKE IT", Theme.Success, 1)
         task.wait(0.8)
 
-        -- Animasi Memperluas Frame untuk Menampilkan Tombol EXECUTE
-        TweenService:Create(MainFrame, TInfo_Smooth, {Size = UDim2.new(0, 320, 0, 205)}):Play()
+        -- Expand UI untuk Menampilkan Tombol EXECUTE
+        TweenService:Create(MainFrame, TInfo_Smooth, {Size = UDim2.new(0, 320, 0, 195)}):Play()
         task.wait(0.2)
 
-        -- Sembunyikan Baris Progress Bar agar Tampilan Lebih Bersih
+        -- Sembunyikan Progress Bar
         TweenService:Create(BarOutline, TInfo_Quick, {BackgroundTransparency = 1}):Play()
         TweenService:Create(BarFill, TInfo_Quick, {BackgroundTransparency = 1}):Play()
 
@@ -391,13 +323,11 @@ task.spawn(function()
             if clicked then return end
             clicked = true
 
-            -- Efek Tekan Tombol
             TweenService:Create(ExecuteBtn, TInfo_Quick, {BackgroundColor3 = Color3.fromRGB(0, 170, 200)}):Play()
             SetStatus("Injecting script...", Theme.Accent)
 
             task.wait(0.3)
             
-            -- Eksekusi Script Utama
             pcall(function()
                 loadstring(game:HttpGet(targetScriptURL))()
             end)
